@@ -11,7 +11,7 @@ export const registerSchema = Joi.object({
 });
 
 export const loginSchema = Joi.object({
-  financial_year: Joi.string().required(),
+  financial_year: Joi.number().positive().required(),
   user_name: Joi.string().required(),
   user_password: Joi.string().min(2).required(),
 });

@@ -18,4 +18,5 @@ router.post('/', createUser);
 router.put('/:id', updateUser);
 router.delete('/:id', deleteUser);
 router.post('/upload', verifyAccessToken, uploadImage, updateUserImage);
+
 export default router;

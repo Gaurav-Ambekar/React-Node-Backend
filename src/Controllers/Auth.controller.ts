@@ -12,6 +12,8 @@ import {
   IPayload,
 } from '../Helpers/jwt_helper';
 import { loginSchema, registerSchema } from '../Helpers/validation_schema';
+import * as dotenv from 'dotenv';
+dotenv.config();
 export interface ILoginForm {
   financial_year: string;
   user_name: string;
@@ -134,4 +136,35 @@ export const logout = async (
   } catch (error) {
     next(error);
   }
+};
+export const getFinancialYear = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  try {
+    const yearRange = generateFinancialYear();
+    res.json({
+      yearRange,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+type yearRangeType = { label: string | number; value: number };
+const generateFinancialYear = (search = -1): yearRangeType[] | string => {
+  const START_FINANCIAL_YEAR = +process.env.START_FINANCIAL_YEAR!;
+  const yearRange: yearRangeType[] = [];
+  let value = 0;
+  const currentMonth = new Date().getMonth();
+  let currentYear =
+    currentMonth > 3 ? new Date().getFullYear() + 1 : new Date().getFullYear();
+  do {
+    let label = `${currentYear}-${currentYear - 1}`;
+    if (search > -1 && search === value) return label;
+    yearRange.push({ label, value });
+    currentYear = currentYear - 1;
+    value++;
+  } while (currentYear >= START_FINANCIAL_YEAR);
+  return yearRange;
 };
